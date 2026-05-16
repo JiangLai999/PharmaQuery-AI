@@ -1,0 +1,53 @@
+<view class="container">
+  <view class="profile-hero card">
+    <view class="avatar-wrapper">
+      <view class="avatar-text">{{userInitial}}</view>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.realName || userInfo.username || '未登录'}}</text>
+      <view class="user-meta">
+        <text class="tag tag-primary">{{roleText}}</text>
+        <text class="department" wx:if="{{userInfo.department}}">{{userInfo.department}}</text>
+      </view>
+      <text class="profile-desc">围绕药品查询、预警和推荐的个人工作台</text>
+    </view>
+  </view>
+
+  <view class="perm-card card">
+    <view class="section-title-row">
+      <view>
+        <text class="section-title">当前权限</text>
+        <text class="section-subtitle">根据角色自动控制可访问能力</text>
+      </view>
+    </view>
+    <view class="perm-list">
+      <text class="perm-item perm-active" wx:for="{{permLabels}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="menu-group card">
+    <view class="menu-item" wx:for="{{menuItems}}" wx:key="key" bindtap="onMenuTap" data-action="{{item.action}}">
+      <view class="menu-icon">{{item.icon}}</view>
+      <view class="menu-content">
+        <text class="menu-text">{{item.title}}</text>
+        <text class="menu-desc">{{item.desc}}</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="menu-group card">
+    <view class="menu-item">
+      <view class="menu-icon">版</view>
+      <view class="menu-content"><text class="menu-text">系统版本</text></view>
+      <text class="menu-value">{{appVersion}}</text>
+    </view>
+    <view class="menu-item">
+      <view class="menu-icon">药</view>
+      <view class="menu-content"><text class="menu-text">药品总数</text></view>
+      <text class="menu-value">{{drugCount}}种</text>
+    </view>
+  </view>
+
+  <view class="logout-btn btn-secondary" bindtap="logout">退出登录</view>
+</view>

@@ -1,0 +1,29 @@
+<view class="login-page">
+  <view class="login-hero">
+    <view class="hero-badge">Pharmacy AI</view>
+    <text class="app-icon">◉</text>
+    <text class="app-title">{{appName}}</text>
+    <text class="app-desc">{{appDesc}}</text>
+  </view>
+
+  <view class="login-form card">
+    <view class="form-title-wrap">
+      <text class="form-title">欢迎登录</text>
+      <text class="form-subtitle">安全访问药品查询、预警和推荐服务</text>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">用户名</text>
+      <input class="form-input" placeholder="{{placeholders.username}}" value="{{username}}" bindinput="onUsernameInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">密　码</text>
+      <input class="form-input" placeholder="{{placeholders.password}}" password="true" value="{{password}}" bindinput="onPasswordInput" bindconfirm="doLogin" />
+    </view>
+    <view class="btn-primary login-btn" bindtap="doLogin">登 录</view>
+  </view>
+
+  <view class="login-footer">
+    <text class="footer-text">{{appName}} {{appVersion}}</text>
+  </view>
+</view>

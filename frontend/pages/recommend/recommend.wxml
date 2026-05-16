@@ -1,0 +1,62 @@
+<view class="container">
+  <view class="recommend-hero card">
+    <text class="page-title">{{pageTitle}}</text>
+    <text class="page-desc">{{pageDesc}}</text>
+    <view class="hero-chip">{{heroChip}}</view>
+  </view>
+
+  <view wx:if="{{isAdminView}}">
+    <view class="dashboard-grid">
+      <view class="dashboard-card" wx:for="{{dashboardCards}}" wx:key="key">
+        <text class="dashboard-title">{{item.title}}</text>
+        <text class="dashboard-value">{{item.value}}</text>
+        <text class="dashboard-desc">{{item.desc}}</text>
+      </view>
+    </view>
+
+    <view class="section-block card" wx:if="{{focusAlerts.length > 0}}">
+      <view class="section-head">
+        <text class="section-title">重点预警</text>
+        <text class="section-subtitle">优先关注双重风险和临近处理项</text>
+      </view>
+      <view class="focus-item" wx:for="{{focusAlerts}}" wx:key="drugId">
+        <view class="focus-main">
+          <text class="focus-name">{{item.genericName}}</text>
+          <text class="focus-desc">{{item.manufacturer || item.category || '需尽快处理'}}</text>
+        </view>
+        <text class="tag focus-tag">{{item.reason}}</text>
+      </view>
+    </view>
+
+    <view class="section-block card" wx:if="{{topCategories.length > 0}}">
+      <view class="section-head">
+        <text class="section-title">分类分布</text>
+        <text class="section-subtitle">当前药品结构中的高频分类</text>
+      </view>
+      <view class="category-row" wx:for="{{topCategories}}" wx:key="category">
+        <text class="category-row-name">{{item.category}}</text>
+        <text class="category-row-count">{{item.cnt}} 种</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else>
+    <view class="recommend-list">
+      <drug-card wx:for="{{recommendations}}" wx:key="drugId" drug="{{item}}" />
+    </view>
+
+    <view class="empty-state" wx:if="{{!loading && recommendations.length === 0}}">
+      <text class="empty-icon">◎</text>
+      <text>暂无推荐</text>
+      <text class="empty-tip">多查询一些药品后，系统将为您智能推荐</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>{{isAdminView ? '正在整理看板数据...' : '正在生成推荐...'}}</text>
+  </view>
+
+  <view class="refresh-btn btn-secondary" bindtap="refreshBatch" wx:if="{{!loading}}">
+    <text>{{isAdminView ? '刷新看板' : '换一批推荐'}}</text>
+  </view>
+</view>

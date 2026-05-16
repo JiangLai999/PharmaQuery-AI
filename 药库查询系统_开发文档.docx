@@ -1,0 +1,768 @@
+# 药库查询系统 - 代码详解与启动指南
+
+---
+
+## 目录
+
+1. [项目概述](#1-项目概述)
+2. [技术架构](#2-技术架构)
+3. [项目结构](#3-项目结构)
+4. [环境配置](#4-环境配置)
+5. [数据库初始化](#5-数据库初始化)
+6. [后端启动](#6-后端启动)
+7. [NLP服务启动](#7-nlp服务启动)
+8. [前端启动](#8-前端启动)
+9. [代码详解](#9-代码详解)
+   - 9.1 后端架构
+   - 9.2 前端架构
+   - 9.3 核心模块分析
+10. [功能说明](#10-功能说明)
+11. [RBAC权限系统](#11-rbac权限系统)
+12. [测试账号](#12-测试账号)
+13. [常见问题](#13-常见问题)
+
+---
+
+## 1. 项目概述
+
+**药库查询系统** 是一套基于 AI 技术的智能药品信息查询平台，采用微服务架构设计，主要包括：
+
+- **后端服务**：Spring Boot 2.7 提供 REST API，支持药品管理、用户认证、推荐系统
+- **前端应用**：微信小程序原生开发，提供移动端药品查询与管理界面
+- **NLP 服务**：Python Flask 提供语义理解与实体识别能力
+
+### 核心功能
+
+| 功能模块 | 说明 |
+|---------|------|
+| 药品查询 | 支持模糊搜索、NLP语义搜索、高级组合筛选 |
+| 药品详情 | 查看药品详细信息、库存状态、风险提示 |
+| 个性化推荐 | 基于协同过滤的药品推荐算法 |
+| 库存管理 | 低库存预警、近效期药品提醒、库存调整 |
+| 权限控制 | 基于角色的访问控制（RBAC） |
+
+---
+
+## 2. 技术架构
+
+### 技术栈
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        微信小程序                            │
+│                      (原生开发 WXML/WXSS)                    │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ HTTP
+┌─────────────────────────────────────────────────────────────┐
+│                     Spring Boot 后端                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Controller │  │   Service   │  │   Mapper    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│         │                │                │                  │
+│  ┌─────────────────────────────────────────────────┐        │
+│  │           Spring Security + JWT                │        │
+│  └─────────────────────────────────────────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+          │                              │
+          ▼                              ▼
+┌──────────────────┐          ┌──────────────────┐
+│     MySQL        │          │  NLP Service     │
+│   (主数据库)      │          │   (Flask)        │
+└──────────────────┘          └──────────────────┘
+```
+
+### 技术选型
+
+| 层级 | 技术 |
+|------|------|
+| 后端框架 | Spring Boot 2.7 |
+| 安全框架 | Spring Security + JWT |
+| ORM | MyBatis-Plus |
+| 数据库 | MySQL 8.x |
+| 前端 | 微信小程序原生 |
+| NLP | Flask + transformers + torch + jieba |
+| JDK | Java 17 |
+| Python | 3.10+ |
+
+---
+
+## 3. 项目结构
+
+```
+药库查询/
+├── backend/                    # Spring Boot 后端
+│   ├── src/main/java/com/pharmacy/
+│   │   ├── controller/        # 控制器层 (API接口)
+│   │   │   ├── DrugController.java      # 药品管理
+│   │   │   ├── AuthController.java      # 认证登录
+│   │   │   ├── RecommendController.java # 推荐系统
+│   │   │   └── LogController.java       # 日志查看
+│   │   ├── service/           # 业务逻辑层
+│   │   │   ├── impl/
+│   │   │   │   ├── DrugServiceImpl.java
+│   │   │   │   ├── RecommendServiceImpl.java
+│   │   │   │   └── NlpServiceImpl.java
+│   │   │   └── DrugService.java
+│   │   ├── mapper/            # 数据访问层 (MyBatis)
+│   │   │   ├── DrugInfoMapper.java
+│   │   │   ├── UserInfoMapper.java
+│   │   │   └── PermissionMapper.java
+│   │   ├── entity/            # 实体类
+│   │   │   ├── DrugInfo.java
+│   │   │   ├── UserInfo.java
+│   │   │   ├── Role.java
+│   │   │   └── Permission.java
+│   │   ├── dto/               # 数据传输对象
+│   │   │   ├── DrugDTO.java
+│   │   │   ├── ApiResult.java
+│   │   │   └── LoginResponse.java
+│   │   ├── config/            # 配置类
+│   │   │   ├── SecurityConfig.java      # 安全配置
+│   │   │   └── WebSocketConfig.java
+│   │   ├── security/          # 安全组件
+│   │   │   ├── JwtTokenProvider.java     # JWT令牌
+│   │   │   ├── JwtAuthenticationFilter.java
+│   │   │   └── CustomUserDetailsService.java
+│   │   └── aspect/            # 切面编程
+│   │       ├── Audit.java                 # 日志注解
+│   │       └── AuditAspect.java
+│   └── src/main/resources/
+│       └── application.yml    # 应用配置
+│
+├── frontend/                  # 微信小程序
+│   ├── config/
+│   │   ├── app.js             # 应用配置 (API地址等)
+│   │   └── theme.js           # 主题配置
+│   ├── pages/
+│   │   ├── index/             # 首页
+│   │   ├── search/            # 搜索页面
+│   │   ├── detail/            # 药品详情
+│   │   ├── recommend/         # 推荐/看板页面
+│   │   ├── drug-form/         # 药品编辑
+│   │   ├── stock-adjust/      # 库存调整
+│   │   ├── login/             # 登录页面
+│   │   └── profile/           # 个人中心
+│   ├── components/
+│   │   └── drug-card/         # 药品卡片组件
+│   └── utils/
+│       ├── api.js             # API封装
+│       └── util.js            # 工具函数
+│
+├── nlp-service/              # NLP微服务
+│   ├── app.py                # Flask应用
+│   ├── requirements.txt      # Python依赖
+│   └── models/               # 模型文件
+│
+├── sql/                      # 数据库脚本
+│   ├── init_mysql.sql        # 初始化脚本 (表结构+数据)
+│   └── seed_data.sql         # 测试数据
+│
+└── README.md                 # 项目说明
+```
+
+---
+
+## 4. 环境配置
+
+### 4.1 开发环境要求
+
+| 软件 | 版本要求 | 说明 |
+|------|---------|------|
+| JDK | 17+ | Java开发工具包 |
+| Maven | 3.8+ | 项目构建工具 |
+| MySQL | 8.x | 主数据库 |
+| Python | 3.10+ | NLP服务运行环境 |
+| 微信开发者工具 | 最新版 | 小程序开发IDE |
+
+### 4.2 Python依赖 (NLP服务)
+
+```bash
+pip install -r requirements.txt
+```
+
+主要依赖：
+- flask
+- transformers
+- torch
+- jieba
+- sklearn
+
+---
+
+## 5. 数据库初始化
+
+### 5.1 创建数据库
+
+```sql
+CREATE DATABASE pharmacy_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 5.2 执行初始化脚本
+
+```bash
+# 进入MySQL
+mysql -u root -p
+
+# 执行脚本
+USE pharmacy_db;
+SOURCE /path/to/init_mysql.sql;
+SOURCE /path/to/seed_data.sql;
+```
+
+### 5.3 数据库配置
+
+修改 `backend/src/main/resources/application.yml`:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/pharmacy_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+```
+
+---
+
+## 6. 后端启动
+
+### 6.1 编译项目
+
+```bash
+cd backend
+mvn clean package
+```
+
+### 6.2 启动服务
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+### 6.3 验证启动
+
+访问健康检查接口：
+```
+http://localhost:8080/api/drugs/fuzzy?keyword=test
+```
+
+预期返回：JSON格式的药品列表
+
+### 6.4 后端API接口一览
+
+| 接口 | 方法 | 路径 | 说明 |
+|------|------|------|------|
+| 登录 | POST | /api/auth/login | 用户名密码登录 |
+| 模糊搜索 | GET | /api/drugs/fuzzy | 关键词搜索 |
+| NLP搜索 | POST | /api/drugs/nlp-search | 语义搜索 |
+| 高级搜索 | POST | /api/drugs/search | 组合条件搜索 |
+| 药品详情 | GET | /api/drugs/{id} | 获取药品详情 |
+| 低库存药品 | GET | /api/drugs/low-stock | 获取低库存药品 |
+| 近效期药品 | GET | /api/drugs/near-expiry | 获取近效期药品 |
+| 更新库存 | PUT | /api/drugs/{id}/stock | 更新库存数量 |
+| 编辑药品 | PUT | /api/drugs/{id} | 编辑药品信息 |
+| 新增药品 | POST | /api/drugs | 新增药品 |
+| 删除药品 | DELETE | /api/drugs/{id} | 删除药品 |
+| 获取推荐 | GET | /api/recommend/{userId} | 获取个性化推荐 |
+| 重置密码 | GET | /api/auth/init-passwords | 重置所有用户密码 |
+
+---
+
+## 7. NLP服务启动
+
+### 7.1 安装依赖
+
+```bash
+cd nlp-service
+pip install -r requirements.txt
+```
+
+### 7.2 启动服务
+
+```bash
+cd nlp-service
+python app.py
+```
+
+### 7.3 验证启动
+
+访问健康检查：
+```
+http://localhost:5000/api/nlp/parse?text=感冒咳嗽吃什么药好
+```
+
+---
+
+## 8. 前端启动
+
+### 8.1 配置API地址
+
+打开 `frontend/config/app.js`，修改后端地址：
+
+```javascript
+// 修改为后端服务所在电脑的局域网IP
+const currentHost = '192.168.x.x';  // 替换为实际IP
+const currentPort = '8080';
+```
+
+### 8.2 微信开发者工具配置
+
+1. 打开微信开发者工具
+2. 选择 `frontend` 目录作为项目目录
+3. 在"详情" → "本地设置"中勾选：
+   - ✅ 不校验合法域名、web-view、TLS 版本以及 HTTPS 证书
+
+### 8.3 真机预览配置
+
+如果需要用手机测试：
+1. 确保手机与电脑在同一局域网
+2. 后端地址改为电脑的局域网IP（如 192.168.0.100）
+
+---
+
+## 9. 代码详解
+
+### 9.1 后端架构
+
+#### 9.1.1 分层架构
+
+```
+请求 → Controller → Service → Mapper → Database
+         ↓
+     Security (JWT验证)
+         ↓
+     Aspect (日志记录)
+```
+
+#### 9.1.2 核心类说明
+
+**DrugController.java** - 药品管理控制器
+
+```java
+@RestController
+@RequestMapping("/drugs")
+public class DrugController {
+    
+    // 模糊搜索
+    @GetMapping("/fuzzy")
+    public ApiResult<List<DrugDTO>> fuzzySearch(@RequestParam String keyword) {
+        return ApiResult.success(drugService.fuzzySearch(keyword));
+    }
+    
+    // NLP语义搜索
+    @PostMapping("/nlp-search")
+    public ApiResult<List<DrugDTO>> nlpSearch(@RequestParam String q) {
+        return ApiResult.success(drugService.nlpSearch(q));
+    }
+    
+    // 更新库存 (需STOCK_WRITE权限)
+    @PutMapping("/{id}/stock")
+    @PreAuthorize("hasAnyAuthority('STOCK_WRITE')")
+    public ApiResult<Void> updateStock(@PathVariable("id") Long drugId, 
+                                        @RequestParam Integer quantity) {
+        // ...
+    }
+}
+```
+
+**SecurityConfig.java** - 安全配置
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+            // 药品查询接口需登录
+            .antMatchers(HttpMethod.GET, "/drugs/**").hasAuthority("DRUG_INFO_READ")
+            // 库存预警接口
+            .antMatchers("/drugs/low-stock", "/drugs/near-expiry").hasAuthority("STOCK_READ")
+            // 其他接口...
+            .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), 
+                            UsernamePasswordAuthenticationFilter.class);
+    }
+}
+```
+
+**JwtTokenProvider.java** - JWT令牌处理
+
+```java
+@Component
+public class JwtTokenProvider {
+    
+    // 生成令牌
+    public String generateToken(String username, Long userId, String role) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
+        
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("userId", userId)
+                .claim("role", role)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .compact();
+    }
+    
+    // 验证令牌
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
+```
+
+#### 9.1.3 推荐算法 (RecommendServiceImpl.java)
+
+采用基于物品的协同过滤算法：
+
+```java
+@Service
+public class RecommendServiceImpl implements RecommendService {
+    
+    @Override
+    public List<DrugDTO> recommendForUser(Long userId, int topK) {
+        // 1. 获取用户历史浏览记录
+        List<Long> viewedDrugIds = interactionMapper.findDrugIdsByUserId(userId);
+        
+        // 2. 查找相似用户/药品
+        List<DrugDTO> recommendations = new ArrayList<>();
+        
+        // 3. 计算相似度并排序
+        // ...
+        
+        return recommendations;
+    }
+}
+```
+
+### 9.2 前端架构
+
+#### 9.2.1 页面结构
+
+```
+frontend/pages/
+├── index/          # 首页：快捷入口、分类浏览、热门药品
+├── search/         # 搜索：模糊/NLP/高级搜索模式
+├── detail/         # 详情：药品信息、库存状态、操作按钮
+├── recommend/      # 推荐/看板：根据角色显示不同内容
+├── drug-form/      # 表单：新增/编辑药品
+├── stock-adjust/   # 库存调整：数量、阈值管理
+├── login/          # 登录：账号密码输入
+└── profile/        # 我的：个人中心、菜单入口
+```
+
+#### 9.2.2 核心页面分析
+
+**search.js** - 搜索页面
+
+```javascript
+Page({
+    data: {
+        mode: 'fuzzy',  // fuzzy/nlp/advanced
+        results: [],
+        canEditDrug: false,
+        canAdjustStock: false
+    },
+    
+    onLoad(options) {
+        // 根据权限控制按钮显示
+        const permissions = app.globalData.userInfo.permissions;
+        this.setData({
+            canEditDrug: permissions.includes('DRUG_INFO_WRITE'),
+            canAdjustStock: permissions.includes('STOCK_WRITE')
+        });
+    },
+    
+    async doSearch() {
+        let res;
+        if (this.data.mode === 'nlp') {
+            res = await api.nlpSearch(this.data.keyword);
+        } else if (this.data.mode === 'advanced') {
+            res = await api.advancedSearch(this.buildAdvancedParams());
+        } else {
+            res = await api.searchDrugs(this.data.keyword);
+        }
+        this.setData({ results: res.data || [] });
+    }
+});
+```
+
+**drug-card 组件** - 药品卡片
+
+```javascript
+Component({
+    properties: {
+        drug: Object,
+        showEditAction: Boolean,
+        showStockAction: Boolean
+    },
+    
+    methods: {
+        onTap() {
+            wx.navigateTo({ url: '/pages/detail/detail?id=' + this.properties.drug.drugId });
+        },
+        
+        onEditTap() {
+            wx.navigateTo({ url: '/pages/drug-form/drug-form?mode=edit&id=' + this.properties.drug.drugId });
+        },
+        
+        onStockTap() {
+            wx.navigateTo({ url: '/pages/stock-adjust/stock-adjust?id=' + this.properties.drug.drugId });
+        }
+    }
+});
+```
+
+#### 9.2.3 API封装 (api.js)
+
+```javascript
+const request = (options) => {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: app.globalData.baseUrl + options.url,
+            method: options.method || 'GET',
+            header: {
+                'Authorization': 'Bearer ' + app.globalData.token
+            },
+            success(res) {
+                if (res.statusCode === 200) {
+                    resolve(res.data);
+                }
+            },
+            fail(reject)
+        });
+    });
+};
+
+// 药品搜索
+const searchDrugs = (keyword) => {
+    return request({ url: '/drugs/fuzzy?keyword=' + encodeURIComponent(keyword) });
+};
+
+// 更新库存
+const updateDrugStock = (drugId, quantity) => {
+    return request({ url: '/drugs/' + drugId + '/stock?quantity=' + quantity, method: 'PUT' });
+};
+
+module.exports = { searchDrugs, updateDrugStock, /* ... */ };
+```
+
+### 9.3 核心模块分析
+
+#### 9.3.1 认证流程
+
+```
+1. 用户输入账号密码 → /api/auth/login
+2. 后端调用 Spring Security AuthenticationManager
+3. JwtAuthenticationFilter 拦截请求，验证 JWT
+4. CustomUserDetailsService 加载用户信息和权限
+5. 返回 Token 和用户信息
+6. 前端保存 Token 到 globalData
+7. 后续请求在 Header 携带 Token
+```
+
+#### 9.3.2 权限控制流程
+
+```
+1. 用户访问某个页面/接口
+2. 前端检查用户权限数组，决定是否显示按钮
+3. 后端接口使用 @PreAuthorize 注解拦截
+4. Spring Security 验证用户是否具备所需权限
+5. 无权限返回 403，有权限放行
+```
+
+#### 9.3.3 库存预警逻辑
+
+```java
+// DrugServiceImpl.java
+public List<DrugDTO> getLowStockDrugs() {
+    // 查询 stock_quantity <= stock_threshold 的药品
+    QueryWrapper<DrugInfo> wrapper = new QueryWrapper<>();
+    wrapper.apply("stock_quantity <= stock_threshold AND status = 1");
+    return drugInfoMapper.selectList(wrapper).stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+}
+```
+
+---
+
+## 10. 功能说明
+
+### 10.1 药品搜索
+
+- **模糊搜索**：输入药名关键词，实时返回匹配结果
+- **NLP语义搜索**：输入自然语言描述，如"感冒咳嗽吃什么药"，AI识别实体后搜索
+- **高级筛选**：按分类、剂型、医保类型、库存状态、厂家组合筛选
+
+### 10.2 药品管理
+
+- **查看详情**：查看药品完整信息，包括适应症、禁忌、相互作用等
+- **编辑药品**：修改药品信息（需 DRUG_INFO_WRITE 权限）
+- **新增药品**：添加新药品（需 PHARMACY_ADMIN 或 SYS_ADMIN 角色）
+- **删除药品**：逻辑删除药品（需 PHARMACY_ADMIN 或 SYS_ADMIN 角色）
+
+### 10.3 库存管理
+
+- **低库存预警**：展示库存数量低于阈值的药品
+- **近效期预警**：展示接近过期的药品
+- **库存调整**：修改库存数量和补货阈值
+- **双重风险**：同时存在低库存和近效期的药品
+
+### 10.4 个性化推荐
+
+- 基于用户历史浏览记录的协同过滤推荐
+- SYS_ADMIN 角色显示管理看板，其他角色显示推荐药品
+
+---
+
+## 11. RBAC权限系统
+
+### 11.1 角色说明
+
+| 角色 | 代码 | 说明 |
+|------|------|------|
+| 临床医生 | DOCTOR | 普通用户，可查询药品和查看推荐 |
+| 药师 | PHARMACIST | 可查询药品、管理库存 |
+| 药房管理员 | PHARMACY_ADMIN | 可管理药品和库存 |
+| 系统管理员 | SYS_ADMIN | 全部权限，显示管理看板 |
+
+### 11.2 权限矩阵
+
+| 权限代码 | 说明 | DOCTOR | PHARMACIST | PHARMACY_ADMIN | SYS_ADMIN |
+|---------|------|--------|------------|-----------------|------------|
+| DRUG_INFO_READ | 读取药品信息 | ✅ | ✅ | ✅ | ✅ |
+| DRUG_INFO_WRITE | 写入药品信息 | ❌ | ❌ | ✅ | ✅ |
+| DRUG_INFO_DELETE | 删除药品 | ❌ | ❌ | ✅ | ✅ |
+| STOCK_READ | 读取库存信息 | ❌ | ✅ | ✅ | ✅ |
+| STOCK_WRITE | 写入库存信息 | ❌ | ✅ | ✅ | ✅ |
+| RECOMMEND_READ | 读取推荐 | ✅ | ✅ | ✅ | ❌* |
+
+*SYS_ADMIN 不走个性化推荐，改为显示管理看板
+
+### 11.3 前后端权限控制
+
+**后端**：使用 `@PreAuthorize` 注解
+```java
+@PreAuthorize("hasAuthority('DRUG_INFO_WRITE')")
+public ApiResult<DrugInfo> updateDrug(...) { }
+```
+
+**前端**：检查 permissions 数组
+```javascript
+const canEditDrug = permissions.includes('DRUG_INFO_WRITE');
+```
+
+---
+
+## 12. 测试账号
+
+所有测试账号密码默认为 `123456`
+
+| 用户名 | 角色 | 说明 |
+|--------|------|------|
+| admin | SYS_ADMIN | 系统管理员，全权限 |
+| pharmacist | PHARMACIST | 药师，库存管理权限 |
+| doctor01 | DOCTOR | 临床医生，普通查询权限 |
+| pharmacy_admin | PHARMACY_ADMIN | 药房管理员，药品管理权限 |
+
+---
+
+## 13. 常见问题
+
+### Q1: 登录显示"账号密码错误"
+
+**排查步骤：**
+1. 确认数据库已初始化，执行了 init_mysql.sql 和 seed_data.sql
+2. 调用重置密码接口：`http://localhost:8080/api/auth/init-passwords`
+3. 确认用户 status=1（未禁用）
+4. 检查 MySQL 用户表中 password 字段是否有值
+
+### Q2: 小程序请求超时
+
+**排查步骤：**
+1. 确认后端服务已启动（访问 http://localhost:8080/api/drugs/fuzzy?keyword=test）
+2. 检查 frontend/config/app.js 中的 apiHost 是否为正确的局域网IP
+3. 确认手机/模拟器与电脑在同一网络
+4. 确认微信开发者工具已关闭域名校验
+
+### Q3: NLP搜索不可用
+
+**排查步骤：**
+1. 确认 NLP 服务已启动（python app.py）
+2. 检查后端配置 application.yml 中的 nlp.service.url
+3. 测试 NLP 服务是否正常：curl http://localhost:5000/api/nlp/parse?text=test
+
+### Q4: 推荐功能无变化
+
+**说明**：推荐功能基于协同过滤，需要用户有历史浏览记录才能产生个性化推荐。新用户会看到通用推荐结果。
+
+### Q5: 修改代码后无效
+
+**说明**：Spring Boot 后端需要重新启动才能加载修改后的代码：
+```bash
+# 停止当前服务 (Ctrl+C)
+# 重新启动
+mvn spring-boot:run
+```
+
+---
+
+## 附录：配置文件说明
+
+### application.yml 关键配置
+
+```yaml
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/pharmacy_db
+    username: root
+    password: 123456
+
+# NLP服务配置
+nlp:
+  service:
+    url: http://localhost:5000/api/nlp
+
+# JWT配置
+jwt:
+  secret: pharmacy-secret-key-2024
+  expiration: 86400000  # 24小时
+```
+
+### app.js 前端配置
+
+```javascript
+const currentHost = '192.168.0.100';  // 后端服务器IP
+const currentPort = '8080';           // 后端端口
+
+module.exports = {
+    apiHost: currentHost,
+    apiPort: currentPort,
+    apiBaseUrl: 'http://' + currentHost + ':' + currentPort + '/api',
+    debugNetwork: false  // 是否开启网络日志
+};
+```
+
+---
+
+*文档版本：v1.0*
+*更新时间：2024年*
+*项目：药库查询系统*

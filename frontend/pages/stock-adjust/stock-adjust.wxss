@@ -1,0 +1,149 @@
+.stock-summary {
+  margin-bottom: 24rpx;
+}
+
+.stock-drug-name {
+  display: block;
+  font-size: 34rpx;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #1f2a37;
+}
+
+.stock-drug-meta {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #7b8794;
+}
+
+.stock-info-grid {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.stock-info-item {
+  flex: 1;
+  min-width: 0;
+  padding: 20rpx;
+  border-radius: 18rpx;
+  background: #f7f9fc;
+}
+
+.stock-info-label {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #7b8794;
+}
+
+.stock-info-value {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 32rpx;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #1f2a37;
+}
+
+.text-success { color: #52c41a; }
+.text-danger { color: #ff4d4f; }
+
+.stock-status-banner {
+  margin-bottom: 24rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 18rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.stock-status-normal {
+  background: #edf9e8;
+  color: #389e0d;
+}
+
+.stock-status-danger {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.form-group {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #52606d;
+}
+
+.required::after {
+  content: ' *';
+  color: #ff4d4f;
+}
+
+.form-input {
+  min-height: 84rpx;
+  width: 100%;
+  padding: 0 20rpx;
+  background: #f7f9fc;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  line-height: 1.45;
+  color: #243447;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 140rpx;
+  padding: 20rpx;
+  background: #f7f9fc;
+  border-radius: 18rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #243447;
+}
+
+.suggest-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.suggest-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #edf9e8;
+  color: #389e0d;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
+.submit-bar {
+  padding: 8rpx 0 24rpx;
+}
+
+.submit-btn {
+  width: 100%;
+}
+
+@media (max-width: 375px) {
+  .stock-info-grid {
+    flex-wrap: wrap;
+    gap: 12rpx;
+  }
+
+  .stock-info-item {
+    width: 100%;
+    flex: none;
+  }
+}

@@ -1,0 +1,314 @@
+.drug-card {
+  padding-top: 32rpx;
+}
+
+.drug-card:active {
+  transform: translateY(2rpx);
+}
+
+.drug-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 8rpx;
+}
+
+.drug-accent-normal { background: linear-gradient(90deg, #52c41a, #a0d911); }
+.drug-accent-warning { background: linear-gradient(90deg, #faad14, #ffc53d); }
+.drug-accent-danger { background: linear-gradient(90deg, #ff4d4f, #ff7a45); }
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 14rpx;
+}
+
+.mini-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  line-height: 1.4;
+}
+
+.mini-badge-form {
+  background: #f4f7fb;
+  color: #52606d;
+}
+
+.mini-badge-insurance {
+  font-weight: 600;
+}
+
+.drug-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1f2a37;
+  line-height: 1.38;
+  word-break: break-word;
+}
+
+.drug-trade {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: #7b8794;
+  word-break: break-word;
+}
+
+.manufacturer-line {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: #9aa5b1;
+  word-break: break-word;
+}
+
+.header-side {
+  width: 136rpx;
+  flex-shrink: 0;
+  padding: 18rpx 14rpx;
+  border-radius: 18rpx;
+  background: linear-gradient(180deg, #fff8f2 0%, #fff3ea 100%);
+  text-align: center;
+}
+
+.price-caption {
+  display: block;
+  font-size: 20rpx;
+  line-height: 1.4;
+  color: #c27b55;
+}
+
+.price-hero {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 30rpx;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #ff7a45;
+}
+
+.insurance-tag-jia { background: #edf9e8; color: #52c41a; }
+.insurance-tag-yi { background: #eaf2ff; color: #2c7ef8; }
+.insurance-tag-bing { background: #fff6e5; color: #d48806; }
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 22rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 18rpx;
+  background: #f7f9fc;
+}
+
+.spec-label {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #7b8794;
+}
+
+.spec-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  color: #243447;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.metrics-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 22rpx;
+}
+
+.metric-card {
+  width: calc(33.333% - 10rpx);
+  min-width: 0;
+  padding: 20rpx 18rpx;
+  border-radius: 18rpx;
+  background: #f7f9fc;
+}
+
+.metric-label {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #7b8794;
+}
+
+.metric-value {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 32rpx;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #243447;
+  word-break: break-word;
+}
+
+.metric-state {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.risk-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
+.risk-pill-warning {
+  background: #fff6e5;
+  color: #d48806;
+}
+
+.risk-pill-danger {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.metric-stock-danger {
+  background: linear-gradient(180deg, #fff7f7 0%, #fff1f0 100%);
+}
+
+.metric-stock-normal {
+  background: linear-gradient(180deg, #f4fff4 0%, #edf9e8 100%);
+}
+
+.risk-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 18rpx;
+}
+
+.risk-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
+.risk-tag-low {
+  background: #fff6e5;
+  color: #d48806;
+}
+
+.risk-tag-expiry {
+  background: #f3f8ff;
+  color: #2c7ef8;
+}
+
+.risk-tag-double {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.recommendation {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+  border-radius: 18rpx;
+  border: 1rpx solid #e4eefc;
+}
+
+.recommendation-label {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #2c7ef8;
+}
+
+.recommendation-text {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #315a8b;
+  line-height: 1.72;
+  word-break: break-word;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid #edf1f5;
+}
+
+.card-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  background: #f3f8ff;
+  color: #2c7ef8;
+  font-size: 22rpx;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.card-action-stock {
+  background: #edf9e8;
+  color: #389e0d;
+}
+
+@media (max-width: 375px) {
+  .header-side {
+    width: 120rpx;
+    padding: 16rpx 12rpx;
+  }
+
+  .drug-name {
+    font-size: 32rpx;
+  }
+
+  .metrics-panel {
+    gap: 12rpx;
+  }
+
+  .metric-card {
+    width: 100%;
+  }
+}

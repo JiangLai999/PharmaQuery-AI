@@ -1,0 +1,39 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+
+# Python
+nlp-service/__pycache__/
+nlp-service/*.pyc
+nlp-service/.venv/
+nlp-service/venv/
+
+# Node / WeChat Mini Program
+frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment & Secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/

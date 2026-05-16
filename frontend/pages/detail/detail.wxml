@@ -1,0 +1,116 @@
+<view class="container">
+  <view class="detail-hero card">
+    <view class="detail-hero-main">
+      <text class="detail-name">{{drug.genericName}}</text>
+      <text class="detail-trade" wx:if="{{drug.tradeName}}">{{drug.tradeName}}</text>
+      <view class="header-tags">
+        <text class="tag tag-primary">{{drug.dosageForm || '--'}}</text>
+        <text class="tag {{drug.insuranceType === '甲' ? 'tag-success' : drug.insuranceType === '乙' ? 'tag-primary' : 'tag-warning'}}">{{insuranceText}}</text>
+        <text class="tag {{drug.riskLevel === 'danger' ? 'tag-danger' : drug.riskLevel === 'warning' ? 'tag-warning' : 'tag-success'}}">{{riskText}}</text>
+      </view>
+    </view>
+    <view class="hero-side">
+      <text class="hero-side-label">价格</text>
+      <text class="hero-side-value">¥{{drug.unitPrice || '--'}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title-row">
+      <view>
+        <text class="section-title">基本信息</text>
+        <text class="section-subtitle">结构化展示药品核心资料</text>
+      </view>
+    </view>
+    <view class="detail-row">
+      <text class="label">规　　格</text><text class="value">{{drug.specification || '--'}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="label">批准文号</text><text class="value">{{drug.approvalNumber || '--'}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="label">生产厂家</text><text class="value">{{drug.manufacturer || '--'}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="label">药理分类</text><text class="value">{{drug.category || '--'}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="label">储存条件</text><text class="value">{{drug.storageCondition || '--'}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title-row">
+      <view>
+        <text class="section-title">库存与效期</text>
+        <text class="section-subtitle">动态查看库存状态与临期风险</text>
+      </view>
+    </view>
+    <view class="stock-grid">
+      <view class="stock-item">
+        <text class="stock-label">当前库存</text>
+        <text class="stock-value {{isLowStock ? 'text-danger' : 'text-success'}}">{{drug.stockQuantity}}</text>
+      </view>
+      <view class="stock-item">
+        <text class="stock-label">补货阈值</text>
+        <text class="stock-value">{{drug.stockThreshold || 0}}</text>
+      </view>
+      <view class="stock-item">
+        <text class="stock-label">有效期至</text>
+        <text class="stock-value {{expiryDays <= 90 ? 'text-danger' : ''}}">{{expiryDateStr}}</text>
+      </view>
+      <view class="stock-item" wx:if="{{expiryDays !== null}}">
+        <text class="stock-label">剩余天数</text>
+        <text class="stock-value {{expiryDays <= 90 ? 'text-danger' : expiryDays <= 180 ? 'text-warning' : 'text-success'}}">{{expiryDays}}天</text>
+      </view>
+    </view>
+    <view class="stock-status-banner {{isLowStock ? 'stock-status-danger' : 'stock-status-normal'}}">
+      <text>{{stockStatusText}}</text>
+    </view>
+  </view>
+
+  <view class="card fold-card">
+    <view class="fold-head" bindtap="toggleIndication">
+      <text class="section-title">适应症</text>
+      <text class="toggle-icon">{{showIndication ? '收起' : '展开'}}</text>
+    </view>
+    <view class="detail-text" wx:if="{{showIndication}}">{{drug.indication || '暂无信息'}}</view>
+  </view>
+
+  <view class="card fold-card">
+    <view class="fold-head" bindtap="toggleContra">
+      <text class="section-title">禁忌症</text>
+      <text class="toggle-icon">{{showContra ? '收起' : '展开'}}</text>
+    </view>
+    <view class="detail-text text-danger" wx:if="{{showContra}}">{{drug.contraindication || '暂无信息'}}</view>
+  </view>
+
+  <view class="card fold-card" wx:if="{{drug.interaction}}">
+    <view class="fold-head" bindtap="toggleInteraction">
+      <text class="section-title">药物相互作用</text>
+      <text class="toggle-icon">{{showInteraction ? '收起' : '展开'}}</text>
+    </view>
+    <view class="detail-text" wx:if="{{showInteraction}}">{{drug.interaction}}</view>
+  </view>
+
+  <view class="action-bar" wx:if="{{canEdit || canDelete || canAdjustStock}}">
+    <view class="btn-edit" wx:if="{{canEdit}}" bindtap="onEditDrug">编辑药品</view>
+    <view class="btn-stock" wx:if="{{canAdjustStock}}" bindtap="onAdjustStock">调整库存</view>
+    <view class="btn-delete" wx:if="{{canDelete}}" bindtap="onDeleteDrug">删除药品</view>
+  </view>
+
+  <view class="card doctor-card" wx:if="{{isDoctor}}">
+    <view class="section-title-row">
+      <view>
+        <text class="section-title">临床用药参考</text>
+        <text class="section-subtitle">便于医生快速浏览适应症与禁忌提醒</text>
+      </view>
+    </view>
+    <view class="doctor-tip">
+      <text>适应症: {{drug.indication || '--'}}</text>
+    </view>
+    <view class="doctor-tip" wx:if="{{drug.contraindication}}">
+      <text class="text-danger">注意禁忌: {{drug.contraindication}}</text>
+    </view>
+  </view>
+</view>

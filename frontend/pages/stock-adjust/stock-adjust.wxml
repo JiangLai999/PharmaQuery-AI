@@ -1,0 +1,61 @@
+<view class="container">
+  <view class="card" wx:if="{{loading}}">
+    <view class="loading"><text>正在加载库存信息...</text></view>
+  </view>
+
+  <view wx:else>
+    <view class="card">
+      <view class="section-title-row">
+        <view>
+          <text class="section-title">库存调整</text>
+          <text class="section-subtitle">统一维护当前库存与补货阈值，并实时判断是否处于低库存状态</text>
+        </view>
+      </view>
+
+      <view class="stock-summary">
+        <text class="stock-drug-name">{{drug.genericName || '--'}}</text>
+        <text class="stock-drug-meta">{{drug.specification || '--'}} · {{drug.manufacturer || '--'}}</text>
+      </view>
+
+      <view class="stock-info-grid">
+        <view class="stock-info-item">
+          <text class="stock-info-label">当前库存</text>
+          <text class="stock-info-value {{currentIsLowStock ? 'text-danger' : 'text-success'}}">{{drug.stockQuantity}}</text>
+        </view>
+        <view class="stock-info-item">
+          <text class="stock-info-label">补货阈值</text>
+          <text class="stock-info-value">{{drug.stockThreshold || 0}}</text>
+        </view>
+      </view>
+
+      <view class="stock-status-banner {{currentIsLowStock ? 'stock-status-danger' : 'stock-status-normal'}}">
+        <text>{{currentStockStatusText}}</text>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label required">调整后库存</text>
+        <input class="form-input" type="number" value="{{quantity}}" bindinput="onQuantityInput" placeholder="请输入调整后的库存数量" />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label required">补货阈值</text>
+        <input class="form-input" type="number" value="{{stockThreshold}}" bindinput="onThresholdInput" placeholder="请输入补货阈值" />
+      </view>
+
+      <view class="suggest-grid">
+        <view class="suggest-chip" bindtap="fillSuggestedQuantity" data-type="threshold">设为阈值</view>
+        <view class="suggest-chip" bindtap="fillSuggestedQuantity" data-type="doubleThreshold">补足到 2 倍阈值</view>
+        <view class="suggest-chip" bindtap="fillSuggestedQuantity" data-value="{{suggestedFixedQuantity}}">设为 100</view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">备注</text>
+        <textarea class="form-textarea" value="{{adjustmentNote}}" bindinput="onNoteInput" placeholder="可记录补货说明或盘点备注（当前仅前端保留）" />
+      </view>
+    </view>
+
+    <view class="submit-bar">
+      <view class="btn-primary submit-btn" bindtap="submitStockAdjust">{{submitting ? '提交中...' : '确认更新库存'}}</view>
+    </view>
+  </view>
+</view>

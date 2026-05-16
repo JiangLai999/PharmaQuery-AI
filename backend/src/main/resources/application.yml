@@ -1,0 +1,90 @@
+# ============================================================
+# 药库药品基础信息查询系统 - 应用配置
+# ============================================================
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: pharmacy-query-system
+
+  # MySQL 数据源
+  datasource:
+    url: jdbc:mysql://localhost:3306/pharmacy_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:your_db_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+
+  # MongoDB (可选, 连接失败时自动降级)
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: pharmacy_db
+      authentication-database: admin
+      auto-index-creation: true
+      # 无认证模式: 不设置username/password
+
+  # Redis (可选, 连接失败时自动降级)
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 3000ms
+    connect-timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 5
+        min-idle: 0
+
+  # 自动配置: MongoDB/Redis不可用时不阻止启动
+  autoconfigure:
+    exclude:
+      # 如果需要完全禁用某个组件，取消下面的注释
+      # - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+      # - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+  # Jackson
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+
+# MyBatis-Plus
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.pharmacy.entity
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# JWT 配置
+jwt:
+  secret: ${JWT_SECRET:your_jwt_secret_key_change_me_in_production}
+  expiration: 86400000  # 24小时
+
+# NLP 微服务地址
+nlp:
+  service:
+    url: http://localhost:5000/api/nlp
+
+# 日志
+logging:
+  level:
+    com.pharmacy: debug
+    org.springframework.security: info
+    org.springframework.data.mongodb: warn
+    org.springframework.data.redis: warn

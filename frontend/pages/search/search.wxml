@@ -1,0 +1,109 @@
+<view class="container">
+  <view class="search-head card">
+    <view class="search-heading">
+      <text class="search-page-title">{{pageTitle}}</text>
+      <text class="search-page-desc">{{pageDesc}}</text>
+    </view>
+
+    <view class="search-wrapper" wx:if="{{mode === 'stockAdjust' || (!isCategoryMode && mode !== 'lowStock' && mode !== 'nearExpiry')}}">
+      <view class="search-bar">
+        <text class="search-icon">⌕</text>
+        <input class="search-input" placeholder="{{searchPlaceholder}}"
+          value="{{keyword}}" bindinput="onInput" bindconfirm="onSearchAction"
+          focus="{{autoFocus}}" />
+        <text class="clear-btn" wx:if="{{keyword}}" bindtap="clearKeyword">×</text>
+      </view>
+      <view class="search-btn" bindtap="onSearchAction">搜索</view>
+    </view>
+  </view>
+
+  <view class="mode-tabs" wx:if="{{!isCategoryMode && mode !== 'stockAdjust' && mode !== 'lowStock' && mode !== 'nearExpiry'}}">
+    <view class="mode-tab {{mode === item.key ? 'mode-tab-active' : ''}}" wx:for="{{modeTabs}}" wx:key="key" bindtap="switchMode" data-mode="{{item.key}}">
+      <text class="mode-tab-title">{{item.label}}</text>
+      <text class="mode-tab-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="filter-panel card" wx:if="{{mode === 'advanced'}}">
+    <view class="section-title-row compact-row">
+      <text class="section-title">{{isCategoryMode ? '分类筛选' : '筛选条件'}}</text>
+    </view>
+    <view class="selected-category-banner" wx:if="{{isCategoryMode && selectedCategoryName}}">
+      <text class="selected-category-label">当前分类</text>
+      <text class="selected-category-name">{{selectedCategoryName}}</text>
+    </view>
+    <view class="filter-grid">
+      <view class="filter-cell">
+        <text class="filter-label">分类</text>
+        <picker bindchange="onCategoryChange" value="{{categoryIndex}}" range="{{categories}}">
+          <view class="filter-picker">{{categories[categoryIndex] || '全部'}}</view>
+        </picker>
+      </view>
+      <view class="filter-cell">
+        <text class="filter-label">剂型</text>
+        <picker bindchange="onDosageChange" value="{{dosageIndex}}" range="{{dosageForms}}">
+          <view class="filter-picker">{{dosageForms[dosageIndex] || '全部'}}</view>
+        </picker>
+      </view>
+      <view class="filter-cell">
+        <text class="filter-label">医保</text>
+        <picker bindchange="onInsuranceChange" value="{{insuranceIndex}}" range="{{insuranceTypes}}">
+          <view class="filter-picker">{{insuranceTypes[insuranceIndex] || '全部'}}</view>
+        </picker>
+      </view>
+      <view class="filter-cell">
+        <text class="filter-label">库存</text>
+        <picker bindchange="onStockChange" value="{{stockIndex}}" range="{{stockOptions}}">
+          <view class="filter-picker">{{stockOptions[stockIndex] || '全部'}}</view>
+        </picker>
+      </view>
+      <view class="filter-cell">
+        <text class="filter-label">厂家</text>
+        <input class="filter-input" placeholder="输入生产厂家" value="{{manufacturer}}" bindinput="onManufacturerInput" />
+      </view>
+    </view>
+    <view class="filter-actions" wx:if="{{isCategoryMode}}">
+      <view class="btn-primary filter-submit-btn" bindtap="doSearch">开始筛选</view>
+    </view>
+  </view>
+
+  <view class="nlp-hint card" wx:if="{{nlpEntities.length > 0}}">
+    <text class="hint-label">AI 识别到以下实体</text>
+    <view class="entity-tags">
+      <text class="entity-tag" wx:for="{{nlpEntityTags}}" wx:key="label">
+        {{item.label}}
+      </text>
+    </view>
+  </view>
+
+  <view class="result-info card-lite" wx:if="{{searched}}">
+    <text class="result-total">共找到 {{total}} 条结果</text>
+    <text class="result-time" wx:if="{{searchTime}}">耗时 {{searchTime}} ms</text>
+  </view>
+
+  <view class="stock-adjust-summary-grid" wx:if="{{mode === 'stockAdjust' && stockAdjustSummary.length > 0}}">
+    <view class="stock-adjust-summary-card {{stockAdjustFilter === item.filter ? 'stock-adjust-summary-card-active' : ''}}" wx:for="{{stockAdjustSummary}}" wx:key="key" bindtap="onStockAdjustSummaryTap" data-filter="{{item.filter}}">
+      <text class="stock-adjust-summary-title">{{item.title}}</text>
+      <text class="stock-adjust-summary-value">{{item.value}}</text>
+      <text class="stock-adjust-summary-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="stock-filter-tip" wx:if="{{mode === 'stockAdjust'}}">
+    <text>当前筛选：{{stockAdjustFilter === 'all' ? '全部药品' : stockAdjustFilter === 'low' ? '低库存' : stockAdjustFilter === 'expiry' ? '近效期' : '双重风险'}}{{keyword ? ' · 关键词已生效' : ''}}</text>
+  </view>
+
+  <view class="result-list">
+    <drug-card wx:for="{{results}}" wx:key="drugId" drug="{{item}}" showEditAction="{{canEditDrug}}" showStockAction="{{(mode === 'lowStock' || mode === 'stockAdjust') && canAdjustStock}}" />
+  </view>
+
+  <view class="empty-state" wx:if="{{searched && results.length === 0 && !loading}}">
+    <text class="empty-icon">⌁</text>
+    <text>未找到相关药品</text>
+    <text class="empty-tip">可以换个关键词，或试试 AI 语义搜索与组合筛选</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>正在检索药品信息...</text>
+  </view>
+</view>

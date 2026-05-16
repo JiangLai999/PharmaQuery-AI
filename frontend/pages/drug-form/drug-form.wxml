@@ -1,0 +1,149 @@
+<view class="container">
+  <view class="card" wx:if="{{loading}}">
+    <view class="loading"><text>正在加载药品信息...</text></view>
+  </view>
+
+  <view wx:else>
+    <view class="card">
+      <view class="section-title-row">
+        <view>
+          <text class="section-title">基础资料</text>
+          <text class="section-subtitle">填写药品识别、分类与流通信息</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label required">通用名</text>
+        <input class="form-input" value="{{form.genericName}}" data-field="genericName" bindinput="onFieldInput" placeholder="请输入药品通用名" />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">商品名</text>
+        <input class="form-input" value="{{form.tradeName}}" data-field="tradeName" bindinput="onFieldInput" placeholder="请输入商品名" />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label required">规格</text>
+        <input class="form-input" value="{{form.specification}}" data-field="specification" bindinput="onFieldInput" placeholder="如 0.5g*24粒" />
+      </view>
+
+      <view class="form-grid">
+        <view class="form-group form-half">
+          <text class="form-label required">剂型</text>
+          <picker bindchange="onDosageChange" value="{{dosageIndex}}" range="{{dosageOptions}}">
+            <view class="form-picker">{{form.dosageForm || '请选择剂型'}}</view>
+          </picker>
+        </view>
+        <view class="form-group form-half">
+          <text class="form-label required">分类</text>
+          <picker bindchange="onCategoryChange" value="{{categoryIndex}}" range="{{categoryOptions}}">
+            <view class="form-picker">{{form.category || '请选择分类'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-grid">
+        <view class="form-group form-half">
+          <text class="form-label required">医保类别</text>
+          <picker bindchange="onInsuranceChange" value="{{insuranceIndex}}" range="{{insuranceOptions}}">
+            <view class="form-picker">{{form.insuranceType || '请选择医保类别'}}</view>
+          </picker>
+        </view>
+        <view class="form-group form-half">
+          <text class="form-label">状态</text>
+          <picker bindchange="onStatusChange" value="{{statusIndex}}" range="{{statusOptions}}" range-key="label">
+            <view class="form-picker">{{statusOptions[statusIndex].label}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label required">生产厂家</text>
+        <input class="form-input" value="{{form.manufacturer}}" data-field="manufacturer" bindinput="onFieldInput" placeholder="请输入生产厂家" />
+      </view>
+
+      <view class="form-grid">
+        <view class="form-group form-half">
+          <text class="form-label">批准文号</text>
+          <input class="form-input" value="{{form.approvalNumber}}" data-field="approvalNumber" bindinput="onFieldInput" placeholder="请输入批准文号" />
+        </view>
+        <view class="form-group form-half">
+          <text class="form-label">条形码</text>
+          <input class="form-input" value="{{form.barcode}}" data-field="barcode" bindinput="onFieldInput" placeholder="请输入条形码" />
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title-row">
+        <view>
+          <text class="section-title">库存与价格</text>
+          <text class="section-subtitle">维护库存阈值、有效期和单价信息</text>
+        </view>
+      </view>
+
+      <view class="form-grid">
+        <view class="form-group form-half">
+          <text class="form-label required">当前库存</text>
+          <input class="form-input" type="number" value="{{form.stockQuantity}}" data-field="stockQuantity" bindinput="onFieldInput" placeholder="请输入库存" />
+        </view>
+        <view class="form-group form-half">
+          <text class="form-label required">补货阈值</text>
+          <input class="form-input" type="number" value="{{form.stockThreshold}}" data-field="stockThreshold" bindinput="onFieldInput" placeholder="请输入阈值" />
+        </view>
+      </view>
+
+      <view class="form-grid">
+        <view class="form-group form-half">
+          <text class="form-label required">单价</text>
+          <input class="form-input" type="digit" value="{{form.unitPrice}}" data-field="unitPrice" bindinput="onFieldInput" placeholder="请输入单价" />
+        </view>
+        <view class="form-group form-half">
+          <text class="form-label">有效期至</text>
+          <picker mode="date" value="{{form.expiryDate}}" bindchange="onExpiryDateChange">
+            <view class="form-picker">{{form.expiryDate || '请选择日期'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-grid">
+        <view class="form-group form-half">
+          <text class="form-label">总有效期(天)</text>
+          <input class="form-input" type="number" value="{{form.shelfLifeDays}}" data-field="shelfLifeDays" bindinput="onFieldInput" placeholder="如 730" />
+        </view>
+        <view class="form-group form-half">
+          <text class="form-label">储存条件</text>
+          <input class="form-input" value="{{form.storageCondition}}" data-field="storageCondition" bindinput="onFieldInput" placeholder="如 阴凉密封保存" />
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title-row">
+        <view>
+          <text class="section-title">临床信息</text>
+          <text class="section-subtitle">补充适应症、禁忌症和相互作用说明</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">适应症</text>
+        <textarea class="form-textarea" value="{{form.indication}}" data-field="indication" bindinput="onFieldInput" placeholder="请输入适应症" />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">禁忌症</text>
+        <textarea class="form-textarea" value="{{form.contraindication}}" data-field="contraindication" bindinput="onFieldInput" placeholder="请输入禁忌症" />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">药物相互作用</text>
+        <textarea class="form-textarea" value="{{form.interaction}}" data-field="interaction" bindinput="onFieldInput" placeholder="请输入药物相互作用" />
+      </view>
+    </view>
+
+    <view class="submit-bar">
+      <view class="btn-primary submit-btn" bindtap="submitForm">{{submitting ? '提交中...' : (mode === 'edit' ? '保存修改' : '确认新增')}}</view>
+    </view>
+  </view>
+</view>

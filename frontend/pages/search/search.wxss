@@ -1,0 +1,381 @@
+.search-head {
+  margin-bottom: 18rpx;
+}
+
+.search-heading {
+  margin-bottom: 24rpx;
+}
+
+.search-page-title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.4rpx;
+  color: #1f2a37;
+}
+
+.search-page-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.72;
+  max-width: 560rpx;
+  color: #7b8794;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 16rpx;
+}
+
+.search-wrapper .search-bar {
+  flex: 1;
+}
+
+.search-icon {
+  color: #2c7ef8;
+  font-size: 34rpx;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  line-height: 1.5;
+  margin-left: 12rpx;
+}
+
+.clear-btn {
+  color: #9aa5b1;
+  font-size: 34rpx;
+  padding: 8rpx;
+}
+
+.search-btn {
+  min-width: 132rpx;
+  flex-shrink: 0;
+  text-align: center;
+  background: linear-gradient(135deg, #2c7ef8 0%, #4e8fff 100%);
+  color: #fff;
+  padding: 22rpx 28rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  letter-spacing: 0.6rpx;
+  white-space: nowrap;
+  box-shadow: 0 10rpx 24rpx rgba(44, 126, 248, 0.2);
+}
+
+.mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+}
+
+.mode-tab {
+  flex: 1;
+  min-width: 0;
+  padding: 18rpx 16rpx;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1rpx solid rgba(228, 234, 242, 0.96);
+  border-radius: 22rpx;
+}
+
+.mode-tab-active {
+  background: linear-gradient(135deg, #2c7ef8 0%, #4e8fff 100%);
+  box-shadow: 0 10rpx 24rpx rgba(44, 126, 248, 0.18);
+}
+
+.mode-tab-title,
+.mode-tab-desc {
+  display: block;
+  text-align: center;
+}
+
+.mode-tab-title {
+  font-size: 26rpx;
+  line-height: 1.45;
+  color: #243447;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.mode-tab-desc {
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  line-height: 1.45;
+  color: #7b8794;
+  word-break: break-word;
+}
+
+.mode-tab-active .mode-tab-title,
+.mode-tab-active .mode-tab-desc {
+  color: #fff;
+}
+
+.filter-panel {
+  margin-bottom: 18rpx;
+}
+
+.compact-row {
+  margin-bottom: 18rpx;
+}
+
+.selected-category-banner {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+  padding: 16rpx 18rpx;
+  background: linear-gradient(135deg, #f3f8ff 0%, #eef5ff 100%);
+  border-radius: 18rpx;
+}
+
+.selected-category-label {
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #2c7ef8;
+}
+
+.selected-category-name {
+  font-size: 26rpx;
+  line-height: 1.45;
+  font-weight: 700;
+  color: #1f2a37;
+}
+
+.filter-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.filter-actions {
+  margin-top: 22rpx;
+}
+
+.filter-submit-btn {
+  width: 100%;
+}
+
+.filter-cell {
+  width: calc(50% - 8rpx);
+  min-width: 0;
+}
+
+.filter-label {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #7b8794;
+}
+
+.filter-picker {
+  min-height: 80rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  background: #f7f9fc;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  line-height: 1.45;
+  color: #243447;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-input {
+  min-height: 80rpx;
+  width: 100%;
+  background: #f7f9fc;
+  padding: 0 20rpx;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  line-height: 1.45;
+}
+
+.nlp-hint {
+  margin-bottom: 18rpx;
+}
+
+.hint-label {
+  display: block;
+  margin-bottom: 14rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #2c7ef8;
+  font-weight: 600;
+}
+
+.entity-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.entity-tag {
+  background: #f3f8ff;
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #2c7ef8;
+}
+
+.card-lite {
+  padding: 8rpx 4rpx 16rpx;
+}
+
+.result-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+  margin-bottom: 16rpx;
+}
+
+.stock-adjust-summary-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 18rpx;
+}
+
+.stock-adjust-summary-card {
+  width: calc(50% - 8rpx);
+  min-width: 0;
+  padding: 22rpx 20rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1rpx solid rgba(228, 234, 242, 0.96);
+}
+
+.stock-adjust-summary-card-active {
+  background: linear-gradient(135deg, #f3f8ff 0%, #eef5ff 100%);
+  border-color: rgba(44, 126, 248, 0.24);
+  box-shadow: 0 8rpx 20rpx rgba(44, 126, 248, 0.08);
+}
+
+.stock-adjust-summary-title {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #7b8794;
+}
+
+.stock-adjust-summary-value {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 38rpx;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #1f2a37;
+}
+
+.stock-adjust-summary-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  line-height: 1.55;
+  color: #7b8794;
+}
+
+.stock-filter-tip {
+  margin-bottom: 16rpx;
+  padding: 14rpx 18rpx;
+  border-radius: 16rpx;
+  background: #f7f9fc;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #52606d;
+}
+
+@media (max-width: 375px) {
+  .search-page-title {
+    font-size: 34rpx;
+  }
+
+  .search-page-desc {
+    max-width: none;
+    font-size: 22rpx;
+  }
+
+  .search-wrapper {
+    gap: 12rpx;
+  }
+
+  .search-btn {
+    min-width: 116rpx;
+    padding-left: 20rpx;
+    padding-right: 20rpx;
+    font-size: 26rpx;
+  }
+
+  .mode-tabs {
+    gap: 10rpx;
+  }
+
+  .mode-tab {
+    width: calc(33.333% - 7rpx);
+    flex: none;
+    padding: 16rpx 12rpx;
+  }
+
+  .mode-tab-title {
+    font-size: 24rpx;
+  }
+
+  .mode-tab-desc {
+    font-size: 18rpx;
+  }
+
+  .filter-grid {
+    gap: 12rpx;
+  }
+
+  .filter-cell {
+    width: calc(50% - 6rpx);
+  }
+
+  .filter-label,
+  .result-total,
+  .result-time {
+    font-size: 22rpx;
+  }
+
+  .stock-adjust-summary-grid {
+    flex-wrap: wrap;
+    gap: 12rpx;
+  }
+
+  .stock-adjust-summary-card {
+    width: calc(50% - 6rpx);
+    flex: none;
+  }
+}
+
+.result-total {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #52606d;
+}
+
+.result-time {
+  color: #2c7ef8;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.empty-tip {
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: #9aa5b1;
+  margin-top: 8rpx;
+}

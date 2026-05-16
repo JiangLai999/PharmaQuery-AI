@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "drug-card": "/components/drug-card/drug-card"
+  },
+  "navigationBarTitleText": "药库查询"
+}

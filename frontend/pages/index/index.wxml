@@ -1,0 +1,94 @@
+<view class="container">
+  <view class="hero-panel card">
+    <view class="hero-content">
+      <text class="hero-overline">Pharmacy Console</text>
+      <text class="hero-title">药品信息一站式查询</text>
+      <text class="hero-desc">{{greeting}}</text>
+      <view class="hero-meta" wx:if="{{roleName}}">
+        <text class="tag tag-primary">{{roleName}}</text>
+        <text class="hero-user" wx:if="{{realName}}">{{realName}}</text>
+      </view>
+    </view>
+    <view class="hero-orb hero-orb-large"></view>
+    <view class="hero-orb hero-orb-small"></view>
+  </view>
+
+  <view class="search-entry search-bar" bindtap="goSearch">
+    <text class="search-symbol">⌕</text>
+    <view class="search-copy">
+      <text class="search-title">搜索药品、症状、分类</text>
+      <text class="search-subtitle">支持 AI 检索与筛选</text>
+    </view>
+  </view>
+
+  <view class="section-title-row">
+    <view>
+      <text class="section-title">快捷工作区</text>
+      <text class="section-subtitle">围绕检索、预警和录入的高频操作</text>
+    </view>
+  </view>
+  <view class="action-grid" wx:if="{{quickActions.length > 0}}">
+    <view class="action-card" wx:for="{{quickActions}}" wx:key="key" bindtap="onQuickActionTap" data-action="{{item.action}}" data-type="{{item.type}}">
+      <view class="action-icon">{{item.icon}}</view>
+      <text class="action-title">{{item.title}}</text>
+      <text class="action-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="section-title-row" wx:if="{{canViewStock && alerts.length > 0}}">
+    <view>
+      <text class="section-title">库存预警</text>
+      <text class="section-subtitle">{{isAdminView ? '汇总近效期、低库存与双重风险药品' : '优先关注近效期与库存紧张药品'}}</text>
+    </view>
+    <text class="section-link" bindtap="goNearExpiry">查看全部</text>
+  </view>
+  <view class="alert-summary-grid" wx:if="{{canViewStock && isAdminView && alertSummary.length > 0}}">
+    <view class="alert-summary-card" wx:for="{{alertSummary}}" wx:key="key">
+      <text class="alert-summary-title">{{item.title}}</text>
+      <text class="alert-summary-value">{{item.value}}</text>
+      <text class="alert-summary-desc">{{item.desc}}</text>
+    </view>
+  </view>
+  <view class="alert-panel card" wx:if="{{canViewStock && alerts.length > 0}}">
+    <view class="alert-item hairline-bottom" wx:for="{{alerts}}" wx:key="drugId">
+      <view class="alert-main">
+        <text class="alert-name">{{item.genericName}}</text>
+        <text class="alert-desc">{{isAdminView ? item.alertDesc : (item.manufacturer || item.dosageForm || '药品状态需关注')}}</text>
+      </view>
+      <view class="alert-side">
+        <text class="tag alert-reason-tag">{{item.alertLabel}}</text>
+        <text class="tag alert-tag alert-tag-{{item.riskLevel}}">{{item.riskText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-title-row" wx:if="{{categories.length > 0}}">
+    <view>
+      <text class="section-title">药品分类</text>
+      <text class="section-subtitle">快速切换到常见药理类别</text>
+    </view>
+  </view>
+  <view class="category-grid" wx:if="{{categories.length > 0}}">
+    <view class="category-card" wx:for="{{categories}}" wx:key="category" bindtap="searchByCategory" data-category="{{item.category}}">
+      <text class="category-name">{{item.category}}</text>
+      <text class="category-count">{{item.cnt}} 种</text>
+    </view>
+  </view>
+
+  <view class="section-title-row">
+    <view>
+      <text class="section-title">常用药品</text>
+      <text class="section-subtitle">最近常见的药品资料入口</text>
+    </view>
+  </view>
+  <view>
+    <drug-card wx:for="{{hotDrugs}}" wx:key="drugId" drug="{{item}}" />
+    <view class="empty-state" wx:if="{{hotDrugs.length === 0 && !loading}}">
+      <text class="empty-icon">◌</text>
+      <text>暂无可展示药品</text>
+    </view>
+    <view class="loading" wx:if="{{loading}}">
+      <text>正在整理药品信息...</text>
+    </view>
+  </view>
+</view>

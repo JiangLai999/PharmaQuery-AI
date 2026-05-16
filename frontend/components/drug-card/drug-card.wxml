@@ -1,0 +1,54 @@
+<view class="drug-card card" bindtap="onTap">
+  <view class="drug-accent drug-accent-{{display.riskLevel}}"></view>
+
+  <view class="card-header">
+    <view class="title-wrap">
+      <view class="top-badge-row">
+        <text class="mini-badge mini-badge-form">{{display.dosageForm}}</text>
+        <text class="mini-badge mini-badge-insurance insurance-tag-{{display.insuranceClass}}">{{display.insuranceText}}</text>
+      </view>
+      <text class="drug-name">{{display.genericName}}</text>
+      <text class="drug-trade" wx:if="{{display.tradeName}}">{{display.tradeName}}</text>
+      <text class="manufacturer-line">{{display.manufacturer}}</text>
+    </view>
+    <view class="header-side">
+      <text class="price-caption">参考价</text>
+      <text class="price-hero">¥{{display.unitPrice}}</text>
+    </view>
+  </view>
+
+  <view class="spec-row">
+    <text class="spec-label">规格</text>
+    <text class="spec-value">{{display.specification}}</text>
+  </view>
+
+  <view class="metrics-panel">
+    <view class="metric-card metric-stock {{display.lowStock ? 'metric-stock-danger' : 'metric-stock-normal'}}">
+      <text class="metric-label">当前库存</text>
+      <text class="metric-value">{{display.stockQuantity}}</text>
+    </view>
+    <view class="metric-card metric-threshold">
+      <text class="metric-label">补货阈值</text>
+      <text class="metric-value">{{display.stockThreshold}}</text>
+    </view>
+    <view class="metric-card metric-status">
+      <text class="metric-label">库存状态</text>
+      <text class="metric-state {{display.lowStock ? 'text-danger' : 'text-success'}}">{{display.stockStatusText}}</text>
+    </view>
+  </view>
+
+  <view class="risk-tag-row" wx:if="{{display.riskTags.length > 0}}">
+    <text class="risk-tag {{item.className}}" wx:for="{{display.riskTags}}" wx:key="key">{{item.text}}</text>
+    <text class="risk-pill risk-pill-{{display.riskLevel}}" wx:if="{{display.showRiskBadge}}">{{display.riskText}}</text>
+  </view>
+
+  <view class="recommendation" wx:if="{{display.recommendation}}">
+    <text class="recommendation-label">推荐说明</text>
+    <text class="recommendation-text">{{display.recommendation}}</text>
+  </view>
+
+  <view class="card-actions" wx:if="{{showEditAction || showStockAction}}">
+    <text class="card-action-btn" wx:if="{{showEditAction}}" catchtap="onEditTap">编辑药品</text>
+    <text class="card-action-btn card-action-stock" wx:if="{{showStockAction}}" catchtap="onStockTap">调整库存</text>
+  </view>
+</view>
