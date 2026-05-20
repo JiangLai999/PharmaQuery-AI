@@ -1,224 +1,269 @@
 {
   "meta": {
     "project": "PharmaQuery-AI",
-    "timestamp": "2026-05-20 16:55:12",
-    "engine": "jieba Rule Engine",
-    "demo_version": "1.0.0"
+    "timestamp": "2026-05-20 17:14:58",
+    "ai_engine": "BERT embeddings (paraphrase-multilingual-MiniLM-L12-v2, 384-dim)",
+    "demo_version": "2.0.0"
   },
-  "workflow1_ner": {
-    "治感冒的抗生素": {
-      "entities": [
-        {
-          "text": "抗生素",
-          "type": "CATEGORY",
-          "confidence": 0.9
-        }
-      ],
-      "intent": "category_search",
-      "queryParams": {
-        "category": "抗生素"
+  "workflow1_bert_ner": {
+    "孩子发烧了吃什么药": [
+      {
+        "drug_name": "对乙酰氨基酚片",
+        "category": "解热镇痛药",
+        "similarity": 0.6472,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "右美沙芬片",
+        "category": "呼吸系统药",
+        "similarity": 0.6313,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "蒙脱石散",
+        "category": "消化系统药",
+        "similarity": 0.6022,
+        "form": "散剂"
+      },
+      {
+        "drug_name": "左氧氟沙星注射液",
+        "category": "抗感染药",
+        "similarity": 0.5463,
+        "form": "注射液"
+      },
+      {
+        "drug_name": "阿奇霉素片",
+        "category": "抗感染药",
+        "similarity": 0.5396,
+        "form": "片剂"
       }
-    },
-    "阿莫西林胶囊": {
-      "entities": [
-        {
-          "text": "阿莫西林",
-          "type": "DRUG",
-          "confidence": 0.95
-        },
-        {
-          "text": "胶囊",
-          "type": "DOSAGE_FORM",
-          "confidence": 0.92
-        }
-      ],
-      "intent": "drug_search",
-      "queryParams": {
-        "drug": "阿莫西林",
-        "dosage_form": "胶囊"
+    ],
+    "老人家血压高头晕": [
+      {
+        "drug_name": "卡托普利片",
+        "category": "心血管系统药",
+        "similarity": 0.6616,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "硝苯地平控释片",
+        "category": "心血管系统药",
+        "similarity": 0.6131,
+        "form": "控释片"
+      },
+      {
+        "drug_name": "缬沙坦胶囊",
+        "category": "心血管系统药",
+        "similarity": 0.6083,
+        "form": "胶囊剂"
+      },
+      {
+        "drug_name": "氨氯地平片",
+        "category": "心血管系统药",
+        "similarity": 0.5923,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "阿托伐他汀钙片",
+        "category": "心血管系统药",
+        "similarity": 0.4377,
+        "form": "片剂"
       }
-    },
-    "儿童退烧药有哪些": {
-      "entities": [
-        {
-          "text": "儿童",
-          "type": "POPULATION",
-          "confidence": 0.85
-        },
-        {
-          "text": "退烧药",
-          "type": "CATEGORY",
-          "confidence": 0.9
-        }
-      ],
-      "intent": "category_search",
-      "queryParams": {
-        "population": "儿童",
-        "category": "退烧药"
+    ],
+    "胃疼反酸想吃药": [
+      {
+        "drug_name": "奥美拉唑肠溶胶囊",
+        "category": "消化系统药",
+        "similarity": 0.6893,
+        "form": "胶囊剂"
+      },
+      {
+        "drug_name": "雷贝拉唑钠肠溶片",
+        "category": "消化系统药",
+        "similarity": 0.6774,
+        "form": "肠溶片"
+      },
+      {
+        "drug_name": "蒙脱石散",
+        "category": "消化系统药",
+        "similarity": 0.6439,
+        "form": "散剂"
+      },
+      {
+        "drug_name": "布洛芬缓释胶囊",
+        "category": "解热镇痛药",
+        "similarity": 0.5392,
+        "form": "胶囊剂"
+      },
+      {
+        "drug_name": "对乙酰氨基酚片",
+        "category": "解热镇痛药",
+        "similarity": 0.5245,
+        "form": "片剂"
       }
-    },
-    "降压药": {
-      "entities": [
-        {
-          "text": "降压药",
-          "type": "CATEGORY",
-          "confidence": 0.9
-        }
-      ],
-      "intent": "category_search",
-      "queryParams": {
-        "category": "降压药"
+    ],
+    "感冒咳嗽嗓子疼": [
+      {
+        "drug_name": "右美沙芬片",
+        "category": "呼吸系统药",
+        "similarity": 0.8215,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "对乙酰氨基酚片",
+        "category": "解热镇痛药",
+        "similarity": 0.6762,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "阿莫西林胶囊",
+        "category": "抗感染药",
+        "similarity": 0.6422,
+        "form": "胶囊剂"
+      },
+      {
+        "drug_name": "头孢克肟分散片",
+        "category": "抗感染药",
+        "similarity": 0.6247,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "阿奇霉素片",
+        "category": "抗感染药",
+        "similarity": 0.6006,
+        "form": "片剂"
       }
-    },
-    "胃溃疡吃什么药": {
-      "entities": [
-        {
-          "text": "胃溃疡",
-          "type": "SYMPTOM",
-          "confidence": 0.88
-        }
-      ],
-      "intent": "symptom_search",
-      "queryParams": {
-        "symptom": "胃溃疡"
+    ],
+    "拉肚子止泻": [
+      {
+        "drug_name": "蒙脱石散",
+        "category": "消化系统药",
+        "similarity": 0.5814,
+        "form": "散剂"
+      },
+      {
+        "drug_name": "奥美拉唑肠溶胶囊",
+        "category": "消化系统药",
+        "similarity": 0.4978,
+        "form": "胶囊剂"
+      },
+      {
+        "drug_name": "雷贝拉唑钠肠溶片",
+        "category": "消化系统药",
+        "similarity": 0.4895,
+        "form": "肠溶片"
+      },
+      {
+        "drug_name": "右美沙芬片",
+        "category": "呼吸系统药",
+        "similarity": 0.4727,
+        "form": "片剂"
+      },
+      {
+        "drug_name": "左氧氟沙星注射液",
+        "category": "抗感染药",
+        "similarity": 0.4446,
+        "form": "注射液"
       }
-    },
-    "治疗腹泻的蒙脱石散": {
-      "entities": [
-        {
-          "text": "腹泻",
-          "type": "SYMPTOM",
-          "confidence": 0.88
-        },
-        {
-          "text": "蒙脱石散",
-          "type": "DRUG",
-          "confidence": 0.95
-        }
-      ],
-      "intent": "symptom_search",
-      "queryParams": {
-        "symptom": "腹泻",
-        "drug": "蒙脱石散"
-      }
-    },
-    "老年人高血压用药": {
-      "entities": [
-        {
-          "text": "老年人",
-          "type": "POPULATION",
-          "confidence": 0.85
-        },
-        {
-          "text": "高血压",
-          "type": "SYMPTOM",
-          "confidence": 0.88
-        }
-      ],
-      "intent": "symptom_search",
-      "queryParams": {
-        "population": "老年人",
-        "symptom": "高血压"
-      }
-    }
+    ]
   },
-  "workflow2_similarity": {
+  "workflow2_bert_similarity": {
     "降压药|高血压用药": {
-      "similarity": 0.3333,
-      "engine": "jaccard"
+      "similarity": 0.6575,
+      "engine": "BERT embeddings (MiniLM-L12-v2)"
     },
     "抗生素|头孢类药物": {
-      "similarity": 0.0,
-      "engine": "jaccard"
+      "similarity": 0.7265,
+      "engine": "BERT embeddings (MiniLM-L12-v2)"
     },
     "感冒药|止痛药": {
-      "similarity": 0.2,
-      "engine": "jaccard"
+      "similarity": 0.6552,
+      "engine": "BERT embeddings (MiniLM-L12-v2)"
     },
     "胃溃疡|消化性溃疡": {
-      "similarity": 0.3333,
-      "engine": "jaccard"
+      "similarity": 0.9187,
+      "engine": "BERT embeddings (MiniLM-L12-v2)"
     },
-    "阿莫西林|青霉素类": {
-      "similarity": 0.0,
-      "engine": "jaccard"
+    "阿莫西林|青霉素类抗生素": {
+      "similarity": 0.3273,
+      "engine": "BERT embeddings (MiniLM-L12-v2)"
     }
   },
-  "workflow3_recommend": {
+  "workflow3_cf_recommend": {
     "user_7": [
       {
         "drug_name": "布洛芬缓释胶囊",
         "score": 5.1917,
-        "reason": "有34%的相似用户也查询了此药品"
+        "reason": "有48%的相似用户也查询了此药品"
       },
       {
         "drug_name": "二甲双胍片",
         "score": 2.4429,
-        "reason": "有16%的相似用户也查询了此药品"
+        "reason": "有22%的相似用户也查询了此药品"
       },
       {
         "drug_name": "格列美脲片",
         "score": 1.7915,
-        "reason": "有11%的相似用户也查询了此药品"
+        "reason": "有16%的相似用户也查询了此药品"
       },
       {
         "drug_name": "胰岛素注射液",
         "score": 1.3029,
-        "reason": "有8%的相似用户也查询了此药品"
+        "reason": "有12%的相似用户也查询了此药品"
       }
     ],
     "user_6": [
       {
         "drug_name": "硝苯地平控释片",
         "score": 1.4657,
-        "reason": "有9%的相似用户也查询了此药品"
+        "reason": "有23%的相似用户也查询了此药品"
       },
       {
         "drug_name": "对乙酰氨基酚片",
         "score": 1.4063,
-        "reason": "有9%的相似用户也查询了此药品"
+        "reason": "有22%的相似用户也查询了此药品"
       },
       {
         "drug_name": "阿莫西林胶囊",
         "score": 1.2236,
-        "reason": "有8%的相似用户也查询了此药品"
+        "reason": "有19%的相似用户也查询了此药品"
       },
       {
         "drug_name": "卡托普利片",
         "score": 1.14,
-        "reason": "有7%的相似用户也查询了此药品"
+        "reason": "有18%的相似用户也查询了此药品"
       },
       {
         "drug_name": "头孢克肟分散片",
         "score": 1.0706,
-        "reason": "有7%的相似用户也查询了此药品"
+        "reason": "有16%的相似用户也查询了此药品"
       }
     ],
     "user_999": [
       {
         "drug_name": "对乙酰氨基酚片",
         "score": 1.55,
-        "reason": "热门药品推荐（冷启动）"
+        "reason": "热门药品推荐 (冷启动 / cold start)"
       },
       {
         "drug_name": "氨氯地平片",
         "score": 1.1,
-        "reason": "热门药品推荐（冷启动）"
+        "reason": "热门药品推荐 (冷启动 / cold start)"
       },
       {
         "drug_name": "二甲双胍片",
         "score": 0.9,
-        "reason": "热门药品推荐（冷启动）"
+        "reason": "热门药品推荐 (冷启动 / cold start)"
       },
       {
         "drug_name": "布洛芬缓释胶囊",
         "score": 0.8,
-        "reason": "热门药品推荐（冷启动）"
+        "reason": "热门药品推荐 (冷启动 / cold start)"
       },
       {
         "drug_name": "硝苯地平控释片",
         "score": 0.7,
-        "reason": "热门药品推荐（冷启动）"
+        "reason": "热门药品推荐 (冷启动 / cold start)"
       }
     ]
   }
