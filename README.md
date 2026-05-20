@@ -220,11 +220,12 @@ pharma-query-ai/
 
 ---
 
-## 24h Build Challenge: AI Workflow MVP（10 分钟可验证）
+## 24h Build Challenge：AI Workflow MVP / AI 工作流 MVP（10 min verifiable / 10 分钟可验证）
 
-> **目标**：无需 MySQL / Java / 微信小程序，**仅需 Python + 3 条命令**即可验证全部 AI 流程。
+> **Goal / 目标**：No MySQL / Java / WeChat needed. **Only Python + 3 commands** to verify the full AI pipeline.
+无需 MySQL / Java / 微信小程序，**仅需 Python + 3 条命令**即可验证全部 AI 流程。
 
-### 快速启动（< 3 分钟）
+### Quick Start / 快速启动（< 3 min / < 3 分钟）
 
 ```bash
 git clone https://github.com/JiangLai999/PharmaQuery-AI.git
@@ -233,121 +234,128 @@ pip install -r demo/requirements.txt
 python demo/run_demo.py
 ```
 
-输出文件：`results.json`（结构化 JSON，包含全部 3 个工作流结果）
+Output / 输出：`results.json`（structured JSON containing all 3 workflow results / 结构化 JSON，包含全部 3 个工作流结果）
 
 ---
 
-### AI 工作流 1：NLP 药品命名实体识别（NER）
+### AI Workflow 1 / AI 工作流 1：NLP Drug NER / NLP 药品命名实体识别
 
-**用户场景**：临床医生在查房时用自然语言描述患者症状，需要快速定位对应药品。
+**Scenario / 用户场景**：Clinicians describe patient symptoms in natural language during ward rounds and need to quickly locate corresponding drugs.
+临床医生在查房时用自然语言描述患者症状，需要快速定位对应药品。
 
-**痛点**：传统 HIS 系统仅支持关键词精确匹配，无法理解"治感冒的抗生素""儿童退烧药"等口语化查询。
+**Pain Point / 痛点**：Traditional HIS systems only support exact keyword matching, unable to understand colloquial queries like "antibiotics for colds" or "fever medicine for children".
+传统 HIS 系统仅支持关键词精确匹配，无法理解"治感冒的抗生素""儿童退烧药"等口语化查询。
 
-| 输入 | 输出（实体 + 类型 + 置信度） | 意图 |
-|------|---------------------------|------|
+| Input / 输入 | Output / 输出（Entity + Type + Confidence / 实体 + 类型 + 置信度） | Intent / 意图 |
+|---|---|---|
 | "阿莫西林胶囊" | 阿莫西林(DRUG, 0.95) + 胶囊(DOSAGE_FORM, 0.92) | drug_search |
 | "儿童退烧药有哪些" | 儿童(POPULATION, 0.85) + 退烧药(CATEGORY, 0.90) | category_search |
 | "老年人高血压用药" | 老年人(POPULATION, 0.85) + 高血压(SYMPTOM, 0.88) | symptom_search |
 
-**引擎**：BERT-BiLSTM-CRF（优先） / jieba 规则引擎（降级兜底）
+**Engine / 引擎**：BERT-BiLSTM-CRF（primary / 优先） / jieba rule engine（fallback / 降级兜底）
 
 ---
 
-### AI 工作流 2：药品语义相似度计算
+### AI Workflow 2 / AI 工作流 2：Drug Semantic Similarity / 药品语义相似度
 
-**用户场景**：药师在审核处方时需要查找某药品的可替代品种。
+**Scenario / 用户场景**：Pharmacists need to find alternative drugs when reviewing prescriptions.
+药师在审核处方时需要查找某药品的可替代品种。
 
-**痛点**：不同厂家的商品名不同但药理相似（如"降压药" vs "高血压用药"），关键词查询无法捕获语义关联。
+**Pain Point / 痛点**：Different manufacturers use different brand names for pharmacologically similar drugs （e.g. "降压药" vs "高血压用药"），keyword search cannot capture semantic relationships.
+不同厂家的商品名不同但药理相似（如"降压药" vs "高血压用药"），关键词查询无法捕获语义关联。
 
-| 输入 A | 输入 B | 相似度 | 引擎 |
-|--------|--------|--------|------|
+| Input A / 输入 A | Input B / 输入 B | Similarity / 相似度 | Engine / 引擎 |
+|---|---|---|---|
 | "降压药" | "高血压用药" | 0.33 | jaccard |
 | "胃溃疡" | "消化性溃疡" | 0.33 | jaccard |
 | "感冒药" | "止痛药" | 0.20 | jaccard |
 
-> **说明**：Jaccard 值为字符级兜底。启用 BERT 后相似度由余弦相似度计算（如"降压药" vs "高血压用药"预期 ≥ 0.75）。
+> **Note / 说明**：Jaccard is character-level fallback. With BERT enabled, cosine similarity on embeddings produces results like "降压药" vs "高血压用药" ≈ 0.75+.
+Jaccard 值为字符级兜底。启用 BERT 后相似度由余弦相似度计算（如"降压药" vs "高血压用药"预期 ≥ 0.75）。
 
 ---
 
-### AI 工作流 3：个性化药品推荐（协同过滤）
+### AI Workflow 3 / AI 工作流 3：Personalized Drug Recommendation / 个性化药品推荐（CF / 协同过滤）
 
-**用户场景**：不同科室医生在药品查询时需要优先看到本科室常用药品。
+**Scenario / 用户场景**：Doctors from different departments need to see department-specific drugs first when querying.
+不同科室医生在药品查询时需要优先看到本科室常用药品。
 
-**痛点**：传统系统统一展示药品列表，忽略科室差异，导致查询效率低下。
+**Pain Point / 痛点**：Traditional systems display a uniform drug list for all users, ignoring departmental differences, leading to low search efficiency.
+传统系统统一展示药品列表，忽略科室差异，导致查询效率低下。
 
-| 输入 | 推荐结果（Top-3） | 推荐依据 |
-|------|------------------|----------|
-| 心内科张医生 (user_7) | 布洛芬缓释胶囊(5.19)、二甲双胍片(2.44)、格列美脲片(1.79) | 34% 相似用户也查询过 |
-| 内分泌科陈医生 (user_6) | 硝苯地平控释片(1.47)、对乙酰氨基酚片(1.41)、阿莫西林胶囊(1.22) | 9% 相似用户也查询过 |
-| 新入职医生 (cold-start) | 对乙酰氨基酚片(1.55)、氨氯地平片(1.10)、二甲双胍片(0.90) | 热门药品（冷启动） |
+| Input / 输入 | Top-3 Recommendations / 推荐结果 | Basis / 推荐依据 |
+|---|---|---|
+| Cardiologist Zhang / 心内科张医生 (user_7) | Ibuprofen 布洛芬(5.19)、Metformin 二甲双胍(2.44)、Glimepiride 格列美脲(1.79) | 34% similar users also queried / 34% 相似用户也查询过 |
+| Endocrinologist Chen / 内分泌科陈医生 (user_6) | Nifedipine 硝苯地平(1.47)、Paracetamol 对乙酰氨基酚(1.41)、Amoxicillin 阿莫西林(1.22) | 9% similar users also queried / 9% 相似用户也查询过 |
+| New doctor / 新入职医生 (cold-start) | Paracetamol 对乙酰氨基酚(1.55)、Amlodipine 氨氯地平(1.10)、Metformin 二甲双胍(0.90) | Hot drugs / 热门药品（冷启动） |
 
-**方法**：User-Based 协同过滤，余弦相似度计算用户交互向量，加权评分推荐未交互药品。
-
----
-
-### 下一步验证计划
-
-1. **部署医院测试环境**，对比传统搜索 vs NLP 搜索的平均查询时间
-2. **A/B 测试推荐点击率**：CF 推荐 vs 随机推荐，目标 CTR 提升 30%+
-3. **收集真实医生查询日志**，扩展 NER 词典（当前仅 50 词），训练领域 BERT 模型
-4. **接入真实 HIS 系统 API**，实现处方审核时的替代药品智能提示
+**Method / 方法**：User-Based Collaborative Filtering / 基于用户的协同过滤，cosine similarity on interaction vectors / 余弦相似度计算用户交互向量，weighted scoring for unseen drugs / 加权评分推荐未交互药品。
 
 ---
 
-### 关键文件
+### Next Validation / 下一步验证计划
 
-| 文件 | 说明 |
-|------|------|
-| `demo/run_demo.py` | AI 工作流 MVP 主脚本（360 行，独立可运行） |
-| `demo/test_demo.py` | 自动化测试（12 个测试用例） |
-| `demo/results.json` | 运行后的结构化输出 |
-| `demo/DEBUG_LOG.md` | 真实排错记录（3 个 Bug + 修复过程） |
-| `demo/AI_COLLABORATION.md` | AI 协作记录（Agent 使用说明） |
-| `nlp-service/app.py` | BERT-BiLSTM-CRF + jieba 规则引擎（319 行） |
-| `backend/src/main/java/.../RecommendServiceImpl.java` | 生产环境协同过滤实现 |
-| `sql/init_mysql.sql` | 数据库 schema（50 药品 + RBAC 表） |
+1. **Deploy to hospital test environment / 部署医院测试环境**，compare traditional search vs NLP search avg query time / 对比传统搜索 vs NLP 搜索的平均查询时间
+2. **A/B test recommendation CTR / A/B 测试推荐点击率**：CF vs random recommendation，target CTR +30% / CF 推荐 vs 随机推荐，目标 CTR 提升 30%+
+3. **Collect real doctor query logs / 收集真实医生查询日志**，expand NER dictionary （currently 50 words / 当前仅 50 词），train domain-specific BERT model / 训练领域 BERT 模型
+4. **Integrate with real HIS system API / 接入真实 HIS 系统 API**，enable smart drug substitution prompts during prescription review / 实现处方审核时的替代药品智能提示
 
 ---
 
-### 测试用例（2 条以上）
+### Key Files / 关键文件
 
-运行自动化测试：
+| File / 文件 | Description / 说明 |
+|---|---|
+| `demo/run_demo.py` | AI workflow MVP main script / 主脚本（360 lines / 行，standalone runnable / 独立可运行） |
+| `demo/test_demo.py` | Automated tests / 自动化测试（13 test cases / 13 个测试用例） |
+| `demo/results.json` | Structured output after run / 运行后的结构化输出 |
+| `demo/DEBUG_LOG.md` | Real debugging log / 真实排错记录（3 bugs + fixes / 3 个 Bug + 修复） |
+| `demo/AI_COLLABORATION.md` | AI collaboration record / AI 协作记录（Agent usage / Agent 使用说明） |
+| `nlp-service/app.py` | BERT-BiLSTM-CRF + jieba rule engine / jieba 规则引擎（319 lines / 行） |
+| `backend/src/main/java/.../RecommendServiceImpl.java` | Production CF implementation / 生产环境协同过滤实现 |
+| `sql/init_mysql.sql` | Database schema / 数据库表结构（50 drugs / 50 药品 + RBAC tables / RBAC 表） |
+
+---
+
+### Test Cases / 测试用例（2+）
+
+Run automated tests / 运行自动化测试：
 
 ```bash
-python -m pytest demo/test_demo.py -v
+python -m unittest demo/test_demo.py -v
 ```
 
-覆盖验证：
+Coverage / 覆盖范围：
 
-| 测试类 | 用例数 | 覆盖内容 |
-|--------|--------|----------|
-| TestNLPEngine | 5 | 症状查询/药品名/多实体/未知输入/完整性 |
-| TestSimilarity | 4 | 相同/语义重叠/无关/有效性 |
-| TestRecommendation | 4 | 活跃用户/Cold-Start/药品库验证/完整性 |
-
----
-
-### 真实排错记录
-
-详见 `demo/DEBUG_LOG.md`，收录 3 条开发过程中的真实 Bug：
-
-1. **BERT 未加载导致 NER Crash** → 增加 try/except + jieba 降级
-2. **jieba 未识别药品专有名词** → 手动添加 jieba 高频词表
-3. **Cold-Start 用户返回空推荐** → 增加热门药品兜底策略
+| Test Class / 测试类 | Cases / 用例数 | Coverage / 覆盖内容 |
+|---|---|---|
+| TestNLPEngine | 5 | Symptom/Drug name/Multi-entity/Unknown/Fallback / 症状/药品名/多实体/未知输入/降级 |
+| TestSimilarity | 4 | Identical/Semantic overlap/Unrelated/Validity / 相同/语义重叠/无关/有效性 |
+| TestRecommendation | 4 | Warm user/Cold-start/Catalog check/Completeness / 活跃用户/冷启动/药品库/完整性 |
 
 ---
 
-### AI 协作记录
+### Real Debugging Log / 真实排错记录
 
-详见 `demo/AI_COLLABORATION.md`，完整记录本次 Build Challenge 的 AI Agent 使用过程：
+详见 `demo/DEBUG_LOG.md`, 3 real bugs from development / 收录 3 条开发过程的真实 Bug：
 
-- 平台：OpenCode (opencode.ai)
-- 模型：deepseek-v4-pro
-- 总耗时：约 45 分钟
-- 包含：代码探索 → MVP 设计 → 编码实现 → 调试验证 的完整闭环
+1. **BERT not loaded → NER crash / BERT 未加载导致 NER 崩溃** → add try/except + jieba fallback / 增加 try/except + jieba 降级
+2. **jieba missing drug proper nouns / jieba 未识别药品专有名词** → manually add high-frequency drug word list / 手动添加 jieba 高频词表
+3. **Cold-start user returns empty recommendations / 冷启动用户返回空推荐** → add hot-drug fallback strategy / 增加热门药品兜底策略
 
 ---
 
-## 开源协议
+### AI Collaboration Record / AI 协作记录
+
+详见 `demo/AI_COLLABORATION.md`, full record of AI Agent usage in this Build Challenge / 完整记录本次 Build Challenge 的 AI Agent 使用过程：
+
+- Platform / 平台：OpenCode（opencode.ai）
+- Model / 模型：deepseek-v4-pro
+- Total time / 总耗时：~45 min / 约 45 分钟
+- Complete loop / 包含：Code exploration / 代码探索 → MVP design / MVP 设计 → Implementation / 编码实现 → Debug & verification / 调试验证
+
+---
+
+## License / 开源协议
 
 本项目基于 [MIT License](LICENSE) 开源。
